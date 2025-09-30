@@ -1,10 +1,11 @@
 package com.example;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.io.*;
-import java.net.*;
 
 public class ServidorMensajes {
     public static void main(String[] args) {
@@ -74,6 +75,19 @@ class ManejadorCliente implements Runnable {
                     case "LEER":
                         String mensajes = ChatUsuarios.leerMensajes(partes[1]);
                         out.println(mensajes);
+                        break;
+
+                    case "BORRAR": // BORRAR;usuario
+                        if (ChatUsuarios.borrarMensajes(partes[1])) {
+                            out.println("✅ Mensajes de " + partes[1] + " eliminados");
+                        } else {
+                            out.println("⚠️ No se encontraron mensajes de " + partes[1]);
+                        }
+                        break;
+
+                    case "LISTAR": // LISTAR
+                        String usuarios = ChatUsuarios.listarUsuarios();
+                        out.println(usuarios);
                         break;
 
                     case "SALIR":
