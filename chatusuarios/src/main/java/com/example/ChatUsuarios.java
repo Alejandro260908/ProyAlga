@@ -164,4 +164,23 @@ public class ChatUsuarios {
         }
         return sb.toString();
     }
+
+    public static String listarArchivos(String usuario) {
+        File carpeta = new File("archivos/" + usuario);
+        if (!carpeta.exists() || !carpeta.isDirectory()) {
+            return "⚠️ El usuario no tiene carpeta de archivos.\n";
+        }
+
+        StringBuilder sb = new StringBuilder("Archivos de " + usuario + ":\n");
+        File[] archivos = carpeta.listFiles((dir, name) -> name.endsWith(".txt"));
+
+        if (archivos == null || archivos.length == 0) {
+            sb.append("⚠️ No hay archivos .txt disponibles.\n");
+        } else {
+            for (File f : archivos) {
+                sb.append(f.getName()).append("\n");
+            }
+        }
+        return sb.toString();
+    }
 }
