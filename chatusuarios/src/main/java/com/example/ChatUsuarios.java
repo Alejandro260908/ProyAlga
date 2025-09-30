@@ -2,6 +2,7 @@ package com.example;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -114,5 +115,39 @@ public class ChatUsuarios {
             sb.append("⚠️ No hay mensajes todavía.\n");
         }
         return sb.toString();
+    }
+
+    public static boolean borrarMensajes(String usuario) {
+        File archivo = new File(ARCHIVO_MENSAJES);
+        if (!archivo.exists()) return false;
+
+        File temp = new File("mensajes_temp.txt");
+
+        boolean borrado = false;
+
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo));
+             BufferedWriter bw = new BufferedWriter(new FileWriter(temp))) {
+
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                Mensaje m = Mensaje.fromString(linea);
+                if (m.destinatario.equals(usuario) || m.remitente.equals(usuario)) {
+                    borrado = true; 
+                } else {
+                    bw.write(linea);
+                    bw.newLine();
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        
+        if (archivo.delete()) {
+            temp.renameTo(archivo);
+        }
+
+        return borrado;
     }
 }
