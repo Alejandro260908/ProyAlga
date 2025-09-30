@@ -74,7 +74,10 @@ class ManejadorCliente implements Runnable {
                         out.println(mensajes);
                         break;
 
-                    
+                    case "SALIR":
+                        out.println("Sesión cerrada");
+                        socket.close();
+                        return;
                 }
             }
         } catch (IOException e) {
