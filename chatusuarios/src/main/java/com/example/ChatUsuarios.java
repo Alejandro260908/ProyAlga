@@ -132,7 +132,7 @@ public class ChatUsuarios {
             while ((linea = br.readLine()) != null) {
                 Mensaje m = Mensaje.fromString(linea);
                 if (m.destinatario.equals(usuario) || m.remitente.equals(usuario)) {
-                    borrado = true; 
+                    borrado = true; // No copiamos este mensaje → eliminado
                 } else {
                     bw.write(linea);
                     bw.newLine();
@@ -143,7 +143,7 @@ public class ChatUsuarios {
             return false;
         }
 
-        
+        // Reemplazamos el archivo original
         if (archivo.delete()) {
             temp.renameTo(archivo);
         }
