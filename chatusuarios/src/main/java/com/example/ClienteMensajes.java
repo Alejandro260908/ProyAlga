@@ -1,6 +1,9 @@
 package com.example;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -30,7 +33,31 @@ public class ClienteMensajes {
 
                 if (comando.startsWith("SALIR")) {
                     break;
-                }
+                }else if (comando.startsWith("DESCARGAR;")) {
+                        out.println(comando);
+                        StringBuilder contenidoArchivo = new StringBuilder();
+
+                        while ((respuesta = in.readLine()) != null && !respuesta.equals("EOF")) {
+                            contenidoArchivo.append(respuesta).append("\n");
+                        }
+
+                        // Guardar en carpeta local del cliente
+                        String[] partes = comando.split(";");
+                        String usuarioOrigen = partes[1];
+                        String nombreArchivo = partes[2];
+
+                        File carpetaDestino = new File("archivos_locales/" + usuarioOrigen);
+                        if (!carpetaDestino.exists()) carpetaDestino.mkdirs();
+
+                        File archivoDestino = new File(carpetaDestino, nombreArchivo);
+
+                        try (BufferedWriter bw = new BufferedWriter(new FileWriter(archivoDestino))) {
+                            bw.write(contenidoArchivo.toString());
+                        }
+
+                        System.out.println("✅ Archivo guardado en: " + archivoDestino.getAbsolutePath());
+                    }
+
             }
 
         } catch (IOException e) {
