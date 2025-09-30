@@ -7,7 +7,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.Scanner;
 
 class Mensaje {
     String remitente;
@@ -60,19 +59,15 @@ public class ChatUsuarios {
             while ((linea = br.readLine()) != null) {
                 String[] partes = linea.split(":");
                 if (partes[0].equals(usuario)) {
-                    System.out.println("El usuario ya existe.");
                     return false;
                 }
             }
-        } catch (IOException e) {
-            // si no existe el archivo, se creará después
-        }
+        } catch (IOException e) {}
 
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(ARCHIVO_USUARIOS, true))) {
             String hash = hashPassword(contrasena);
             bw.write(usuario + ":" + hash);
             bw.newLine();
-            System.out.println("Usuario registrado con éxito.");
             return true;
         } catch (IOException e) {
             e.printStackTrace();
@@ -90,9 +85,7 @@ public class ChatUsuarios {
                     return true;
                 }
             }
-        } catch (IOException e) {
-            System.out.println("No hay usuarios registrados aún.");
-        }
+        } catch (IOException e) {}
         return false;
     }
 
@@ -106,97 +99,20 @@ public class ChatUsuarios {
         }
     }
 
-    public static void leerMensajes(String usuario) {
+    public static String leerMensajes(String usuario) {
+        StringBuilder sb = new StringBuilder();
         try (BufferedReader br = new BufferedReader(new FileReader(ARCHIVO_MENSAJES))) {
             String linea;
-            System.out.println("📩 Mensajes de/para " + usuario + ":");
             while ((linea = br.readLine()) != null) {
                 Mensaje m = Mensaje.fromString(linea);
                 if (m.destinatario.equals(usuario) || m.remitente.equals(usuario)) {
-                    System.out.println(m.remitente + " -> " + m.destinatario + ": " + m.texto);
+                    sb.append(m.remitente).append(" -> ").append(m.destinatario)
+                      .append(": ").append(m.texto).append("\n");
                 }
             }
         } catch (IOException e) {
-            System.out.println("⚠️ No hay mensajes todavía.");
+            sb.append("⚠️ No hay mensajes todavía.\n");
         }
-    }
-
-public static void main(String[] args) {
-        Scanner sc = new Scanner(System.in);
-        int opcion;
-
-        do {
-            System.out.println("\n=== Sistema de Mensajes Seguro ===");
-            System.out.println("1. Registrar usuario");
-            System.out.println("2. Iniciar sesión");
-            System.out.println("3. Salir");
-            System.out.print("Elige una opción: ");
-            opcion = sc.nextInt();
-            sc.nextLine();
-
-            switch (opcion) {
-                case 1:
-                    System.out.print("Nuevo usuario: ");
-                    String nuevoUsuario = sc.nextLine();
-                    System.out.print("Contraseña: ");
-                    String nuevaContrasena = sc.nextLine();
-                    registrarUsuario(nuevoUsuario, nuevaContrasena);
-                    break;
-
-                case 2:
-                    System.out.print("Usuario: ");
-                    String usuario = sc.nextLine();
-                    System.out.print("Contraseña: ");
-                    String contrasena = sc.nextLine();
-
-                    if (autenticar(usuario, contrasena)) {
-                        System.out.println("Sesión iniciada correctamente.");
-                        menuUsuario(usuario, sc);
-                    } else {
-                        System.out.println("Usuario o contraseña incorrectos.");
-                    }
-                    break;
-
-                case 3:
-                    System.out.println("Cerrando el programa...");
-                    break;
-            }
-
-        } while (opcion != 3);
-
-        sc.close();
-    }
-
-    public static void menuUsuario(String usuario, Scanner sc) {
-        int opcion;
-        do {
-            System.out.println("\n=== Menú de " + usuario + " ===");
-            System.out.println("1. Enviar mensaje");
-            System.out.println("2. Leer mis mensajes");
-            System.out.println("3. Cerrar sesión");
-            System.out.print("Elige una opción: ");
-            opcion = sc.nextInt();
-            sc.nextLine();
-
-            switch (opcion) {
-                case 1:
-                    System.out.print("Usuario destinatario: ");
-                    String destinatario = sc.nextLine();
-                    System.out.print("Escribe el mensaje: ");
-                    String texto = sc.nextLine();
-                    enviarMensaje(usuario, destinatario, texto);
-                    System.out.println("Mensaje enviado.");
-                    break;
-
-                case 2:
-                    leerMensajes(usuario);
-                    break;
-
-                case 3:
-                    System.out.println("Sesión cerrada.");
-                    break;
-            }
-
-        } while (opcion != 3);
+        return sb.toString();
     }
 }
