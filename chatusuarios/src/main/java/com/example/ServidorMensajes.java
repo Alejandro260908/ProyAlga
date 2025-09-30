@@ -90,6 +90,15 @@ class ManejadorCliente implements Runnable {
                         out.println(usuarios);
                         break;
 
+                    case "LISTAR_ARCHIVOS": // LISTAR_ARCHIVOS;usuario
+                        out.println(ChatUsuarios.listarArchivos(partes[1]));
+                        break;
+
+                    case "DESCARGAR": // DESCARGAR;usuario;archivo.txt
+                        String contenido = ChatUsuarios.descargarArchivo(partes[1], partes[2]);
+                        out.println(contenido);
+                        break;
+
                     case "SALIR":
                         out.println("Sesión cerrada");
                         socket.close();
