@@ -35,7 +35,7 @@ class Mensaje {
     }
 }
 
-public class Main {
+public class ChatUsuarios {
 
     static final String ARCHIVO_MENSAJES = "mensajes.txt";
     static final String ARCHIVO_USUARIOS = "usuarios.txt";
