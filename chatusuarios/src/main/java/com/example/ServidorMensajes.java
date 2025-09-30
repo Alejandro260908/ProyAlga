@@ -64,6 +64,11 @@ class ManejadorCliente implements Runnable {
                         }
                         break;
 
+                    case "ENVIAR":
+                        ChatUsuarios.enviarMensaje(partes[1], partes[2], partes[3]);
+                        out.println("Mensaje enviado");
+                        break;
+
                     
                 }
             }
