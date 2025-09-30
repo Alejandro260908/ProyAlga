@@ -38,5 +38,28 @@ class ManejadorCliente implements Runnable {
         }
     }
 
-    
+    @Override
+    public void run() {
+        try {
+            out.println("Bienvenido al servidor de mensajería");
+            String linea;
+
+            while ((linea = in.readLine()) != null) {
+                String[] partes = linea.split(";", 4);
+
+                switch (partes[0]) {
+                    case "REGISTRAR":
+                        if (ChatUsuarios.registrarUsuario(partes[1], partes[2])) {
+                            out.println("Usuario registrado");
+                        } else {
+                            out.println("Usuario ya existe");
+                        }
+                        break;
+
+                    
+            }
+        } catch (IOException e) {
+            System.out.println("Cliente desconectado");
+        }
+    }
 }
