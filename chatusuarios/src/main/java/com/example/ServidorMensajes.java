@@ -28,5 +28,15 @@ class ManejadorCliente implements Runnable {
     private BufferedReader in;
     private PrintWriter out;
 
+    public ManejadorCliente(Socket socket) {
+        this.socket = socket;
+        try {
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     
 }
