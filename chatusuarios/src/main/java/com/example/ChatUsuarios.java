@@ -150,4 +150,18 @@ public class ChatUsuarios {
 
         return borrado;
     }
+
+    public static String listarUsuarios() {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(ARCHIVO_USUARIOS))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                String[] partes = linea.split(":");
+                sb.append(partes[0]).append("\\n");
+            }
+        } catch (IOException e) {
+            sb.append("⚠️ No hay usuarios registrados.\\n");
+        }
+        return sb.toString();
+    }
 }
