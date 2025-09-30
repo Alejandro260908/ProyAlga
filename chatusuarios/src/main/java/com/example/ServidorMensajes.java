@@ -56,7 +56,16 @@ class ManejadorCliente implements Runnable {
                         }
                         break;
 
+                    case "LOGIN":
+                        if (ChatUsuarios.autenticar(partes[1], partes[2])) {
+                            out.println("Login exitoso");
+                        } else {
+                            out.println("Usuario o contraseña incorrectos");
+                        }
+                        break;
+
                     
+                }
             }
         } catch (IOException e) {
             System.out.println("Cliente desconectado");
