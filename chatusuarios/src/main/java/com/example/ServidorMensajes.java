@@ -69,6 +69,11 @@ class ManejadorCliente implements Runnable {
                         out.println("Mensaje enviado");
                         break;
 
+                    case "LEER":
+                        String mensajes = ChatUsuarios.leerMensajes(partes[1]);
+                        out.println(mensajes);
+                        break;
+
                     
                 }
             }
