@@ -183,4 +183,22 @@ public class ChatUsuarios {
         }
         return sb.toString();
     }
+
+    public static String descargarArchivo(String usuario, String nombreArchivo) {
+        File archivo = new File("archivos/" + usuario + "/" + nombreArchivo);
+        if (!archivo.exists()) {
+            return "⚠️ El archivo no existe.\n";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader br = new BufferedReader(new FileReader(archivo))) {
+            String linea;
+            while ((linea = br.readLine()) != null) {
+                sb.append(linea).append("\n");
+            }
+        } catch (IOException e) {
+            return "⚠️ Error al leer el archivo.\n";
+        }
+        return sb.toString();
+    }
 }
