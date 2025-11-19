@@ -1,6 +1,9 @@
 package com.example.serverMulti;
 
-import java.sql.Connection;
+import java.sql.*;
+import java.io.IOException;
+import java.io.FileInputStream;
+import java.util.*;
 
 public class bdd {
     private static String BDD_URL = "jdbc:postgresql://localhost:5432/chat_db";
@@ -23,4 +26,21 @@ public class bdd {
             conexion = null;
         }
     }
+
+    private static void crearTablaUsuarios() throws SQLException{
+        String sql = """
+                CREATE TABLE IF NOT EXISTS usuarios(
+                id SERIAL PRIMARY KEY,
+                username varchar(50) UNIQUE NOT NULL,
+                password varchar(255) NOT NULL
+                )
+                """;
+
+        try(Statement stmt = conexion.createStatement()){
+            stmt.execute(sql);
+            System.out.println("Tabla usuarios creada");
+        }
+    }
+
+    
 }
