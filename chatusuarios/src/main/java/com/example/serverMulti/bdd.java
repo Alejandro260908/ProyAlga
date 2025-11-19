@@ -84,7 +84,7 @@ public class bdd {
 
     public static boolean rU(String username, String password){
         if(conexion == null){
-            return SistemaAutenticacion.registrarUsuarioOffline(username,password);
+            return SisAutenticacion.rUOffline(username,password);
         }
 
         String sql = "INSERT INTO usuarios(username, password) VALUES(?,?)";
@@ -116,6 +116,29 @@ public class bdd {
             pstmt.executeUpdate();
         }catch(SQLException e){
             System.err.println("Error al inicializar ranking: "+e.getMessage());
+        }
+    }
+
+    public static boolean validarLogin(String username, String password){
+        if(conexion == null){
+            return SisAutenticacion.vLOffline(username,password);
+        }
+
+        String sql = "SELECT password FROM usuarios WHERE username = ?";
+
+        try(PreparedStatement pstmt = conexion.prepareStatement(sql)){
+            pstmt.setString(1,username);
+
+            try(ResultSet rs = pstmt.executeQuery()){
+                if(rs.next()){
+                    String contraGuardada = rs.getString("password");
+                    return password.equals(contraGuardada);
+                }
+                return false;
+            }
+        }catch(SQLException e){
+            System.err.println("Error al validar el login: "+e.getMessage());
+            return false;
         }
     }
 }
