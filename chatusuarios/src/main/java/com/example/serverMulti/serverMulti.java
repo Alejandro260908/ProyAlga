@@ -2,6 +2,7 @@ package com.example.serverMulti;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.HashMap;
 
 public class serverMulti {
@@ -19,25 +20,32 @@ public class serverMulti {
     }
 
     public static void main(String[] args) throws IOException {
+        bdd.inicializarConexion();
+        
         ServerSocket servidorSocket = new ServerSocket(8080);
-        int c = 0;  
-
-        System.out.println("     SERVIDOR CHAT MULTIUSUARIO     \n");
-        try {
-            java.net.ServerSocket servidor = new java.net.ServerSocket(puerto);
-            System.out.println("Servidor iniciado en el puerto " + puerto);
-            System.out.println("Esperando conexiones de clientes...\n");
-            while (true) {
-                java.net.Socket socketCliente = servidor.accept();
-                unCliente nuevoCliente = new unCliente(socketCliente);
-                Thread hiloCliente = new Thread(nuevoCliente);
-                hiloCliente.start();
-            }
-        } catch (IOException e) {
-            System.err.println("ERROR AL INICIAR EL SERVIDOR");
-            System.err.println(String.format("%-42s", e.getMessage()));
-            System.exit(1);
+        int contador = 0;
+        if(bdd.estaConectado()){
+            System.out.println("Base de datos conectada. Los usuarios se guardaran permanentemente");
+        }else{
+            System.out.println("Modo offline. Los usuarios se guardaran solo en memoria");
         }
-    }    
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            bdd.cerrarConexion();
+        }));
+
+        while (true){
+            Socket s = servidorSocket.accept();
+            String clienteUsuario = "Usuario" + contador;
+            unCliente Cliente = new unCliente(clienteUsuario,s);
+            Thread hilo = new Thread(Cliente);
+            clientes.put(clienteUsuario, Cliente);
+            
+            
+            hilo.start();
+            System.out.println("Se conectó el "+clienteUsuario);
+            contador++;
+        }
+    }  
 
 }
