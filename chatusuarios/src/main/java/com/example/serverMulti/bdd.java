@@ -108,5 +108,14 @@ public class bdd {
             return false;
         }
     }
-    
+
+    private static void inicializarRanking(String username){
+        String sql = "INSERT INTO ranking(username, victorias, empates, derrotas, puntos) VALUES(?,0,0,0,0)";
+        try(PreparedStatement pstmt = conexion.prepareStatement(sql)){
+            pstmt.setString(1,username);
+            pstmt.executeUpdate();
+        }catch(SQLException e){
+            System.err.println("Error al inicializar ranking: "+e.getMessage());
+        }
+    }
 }
