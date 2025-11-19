@@ -141,4 +141,23 @@ public class bdd {
             return false;
         }
     }
+
+    public static boolean existeUsuario(String username){
+        if(conexion == null){
+            return SisAutenticacion.eUOffline(username);
+        }
+
+        String sql = "SELECT 1 FROM usuarios WHERE username = ?";
+
+        try(PreparedStatement pstmt = conexion.prepareStatement(sql)){
+            pstmt.setString(1,username);
+
+            try(ResultSet rt = pstmt.executeQuery()){
+                return rt.next();
+            }
+        }catch(SQLException e ){
+            System.err.println("Error al obtener el usuario: "+e.getMessage());
+            return false;
+        }
+    }
 }
