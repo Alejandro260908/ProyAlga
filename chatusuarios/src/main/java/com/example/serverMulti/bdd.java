@@ -456,6 +456,24 @@ public class bdd {
         }
     }
 
+    public static boolean yoBloquee(String bloqueador, String bloqueado){
+        if(conexion == null){
+            return false;
+        }
+
+        String sql = "SELECT 1 FROM bloqueos WHERE bloqueador = ? AND bloqueado = ?";
+        try(PreparedStatement pstmt = conexion.prepareStatement(sql)){
+            pstmt.setString(1, bloqueador);
+            pstmt.setString(2, bloqueado);
+
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        }catch(SQLException e){
+            System.err.println("Error al verificar si bloqueaste al usuario: " + e.getMessage());
+            return false;
+        }
+    }
+
     public static void cerrarConexion(){
         if(conexion != null){
             try{
