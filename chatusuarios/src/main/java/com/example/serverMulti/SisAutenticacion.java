@@ -176,7 +176,7 @@ public class SisAutenticacion {
         return LIMITE_MENSAJES - enviados;
         }
 
-    public static boolean registrarUsuarioOffline(String username, String password) {
+    public static boolean rUOffline(String username, String password) {
         if (usuariosRegistrados.containsKey(username)) {
             return false;
         }
@@ -184,12 +184,12 @@ public class SisAutenticacion {
         return true;
     }
 
-    public static boolean validarLoginOffline(String username, String password) {
+    public static boolean vLOffline(String username, String password) {
         String storedPassword = usuariosRegistrados.get(username);
         return storedPassword != null && storedPassword.equals(password);
     }
 
-    public static boolean existeUsuarioOffline(String username) {
+    public static boolean eUOffline(String username) {
         return usuariosRegistrados.containsKey(username);
     }
 

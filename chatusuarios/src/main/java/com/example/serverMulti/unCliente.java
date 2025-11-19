@@ -271,7 +271,7 @@ public class unCliente implements Runnable {
                                 salida.writeUTF("El usuario " + nombreDestino + " no esta disponible");
                             }
                         } else {
-                            GestorJuegos.enviarInvitacion(usuario, destinatario.usuario, this, destinatario);
+                            juegos.enviarInvitacion(usuario, destinatario.usuario, this, destinatario);
                         }
                     }
                     continue;
@@ -279,13 +279,13 @@ public class unCliente implements Runnable {
                 
                 // Comando para aceptar invitación
                 if(mensaje.equals("/aceptar")){
-                    GestorJuegos.aceptarInvitacion(usuario, this);
+                    juegos.aceptarInvitacion(usuario, this);
                     continue;
                 }
                 
                 // Comando para rechazar invitación
                 if(mensaje.equals("/rechazar")){
-                    GestorJuegos.rechazarInvitacion(usuario, this);
+                    juegos.rechazarInvitacion(usuario, this);
                     continue;
                 }
                 
@@ -300,7 +300,7 @@ public class unCliente implements Runnable {
                     try{
                         int fila = Integer.parseInt(partes[1]);
                         int columna = Integer.parseInt(partes[2]);
-                        GestorJuegos.procesarMovimiento(usuario, fila, columna, this);
+                        juegos.procesarMovimiento(usuario, fila, columna, this);
                     } catch(NumberFormatException e){
                         salida.writeUTF("Fila y columna deben ser numeros del 0 al 2");
                     }
@@ -380,7 +380,7 @@ public class unCliente implements Runnable {
                 System.out.println("Cliente " + nombreDisplay + " se desconectó (" + tipoError + ")");
 
                 // Manejar desconexión en juegos activos
-                GestorJuegos.manejarDesconexion(usuario);
+                juegos.manejarDesconexion(usuario);
                 
 
                 SisAutenticacion.limpiarCliente(usuario);
