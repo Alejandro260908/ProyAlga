@@ -3,15 +3,17 @@ package com.example.serverMulti;
 import java.sql.*;
 import java.io.IOException;
 import java.io.FileInputStream;
-import java.util.*;
+import java.util.Properties;
+import java.util.ArrayList;
+import java.util.List;
 
 public class bdd {
     private static String BDD_URL = "jdbc:postgresql://localhost:5432/chat_db";
     private static String BDD_USER = "postgres";
     private static String BDD_PASSWORD = "ElPsyCongroo123";
-    private static Connection conexion = null;
+    private static Connection conexion;
 
-    public static void inicializarConexion() {
+    public static void inicializarConexion() throws SQLException {
         try {
             cargarConfig();
 
@@ -26,6 +28,20 @@ public class bdd {
         } catch (ClassNotFoundException e) {
             System.err.println("Error al conectar a la base de datos: " + e.getMessage());
             conexion = null;
+        }
+    }
+
+    private static void cargarConfig(){
+        try(FileInputStream fis = new FileInputStream("database.properties")){
+            Properties prop = new Properties();
+            prop.load(fis);
+            BDD_URL = prop.getProperty("BDD_URL",BDD_URL);
+            BDD_USER = prop.getProperty("BDD_USER",BDD_USER);
+            BDD_PASSWORD = prop.getProperty("BDD_PASSWORD",BDD_PASSWORD);
+
+            System.out.println("Configuracion cargada desde database.properties");
+        }catch(IOException e){
+            System.err.println("Usando la configuracion por defecto (database.properties no encontrado)");
         }
     }
 
@@ -244,7 +260,7 @@ public class bdd {
 
     public static boolean desbloquearUsuario(String bloqueador, String baneado){
         if(conexion == null) {
-            System.err.println("No hay conexion a la base de datos, no se puede desbloquear el usuario: " + bloqueado);
+            System.err.println("No hay conexion a la base de datos, no se puede desbloquear el usuario: " + baneado);
             return false;
         }
 
@@ -454,4 +470,5 @@ public class bdd {
     public static boolean estaConectado(){
         return conexion != null;
     }
+
 }
