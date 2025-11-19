@@ -17,6 +17,8 @@ public class bdd {
 
             Class.forName("org.postgresql.Driver");
 
+            conexion = DriverManager.getConnection(BDD_URL, BDD_USER, BDD_PASSWORD);
+
             crearTU();
             crearTR();
 
@@ -42,5 +44,23 @@ public class bdd {
         }
     }
 
-    
+    private static void crearTR() throws SQLException{
+        String sql = """
+                CREATE TABLE IF NOT EXISTS ranking(
+                id SERIAL PRIMARY KEY,
+                username varchar(50) UNIQUE NOT NULL,
+                victorias INT DEFAULT 0,
+                empates INT DEFAULT 0,
+                derrotas INT DEFAULT 0,
+                puntos INT DEFAULT 0,
+                FOREIGN KEY (username) REFERENCES usuarios(username) ON DELETE CASCADE
+                )
+                """;
+
+        try(Statement stmt = conexion.createStatement()){
+            stmt.execute(sql);
+            System.out.println("Tabla ranking creada");
+        }
+        
+    }
 }
