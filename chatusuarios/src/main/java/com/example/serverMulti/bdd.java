@@ -376,4 +376,67 @@ public class bdd {
 
         return ranking;
     }
+
+    public static String obtenerRankingsVs(String jugador1, String jugador2){
+        if(conexion == null){
+            return "Ranking no disponible en modo offline";
+        }
+
+        String sql = "SELECT username, victorias, empates, derrotas, puntos FROM ranking WHERE username IN (?,?)";
+
+        try(PreparedStatement pstmt = conexion.prepareStatement(sql)){
+            pstmt.setString(1, jugador1);
+            pstmt.setString(2, jugador2);
+
+            ResultSet rs = pstmt.executeQuery();
+
+            int v1 = 0, e1 = 0, d1 = 0, p1 = 0;
+            int v2 = 0, e2 = 0, d2 = 0, p2 = 0;
+            boolean encontrado1 = false, encontrado2 = false;
+
+            while(rs.next()){
+                String username = rs.getString("username");
+                if(username.equals(jugador1)){
+                    v1 = rs.getInt("victorias");
+                    e1 = rs.getInt("empates");
+                    d1 = rs.getInt("derrotas");
+                    p1 = rs.getInt("puntos");
+                    encontrado1 = true;
+                } else if(username.equals(jugador2)){
+                    v2 = rs.getInt("victorias");
+                    e2 = rs.getInt("empates");
+                    d2 = rs.getInt("derrotas");
+                    p2 = rs.getInt("puntos");
+                    encontrado2 = true;
+                }
+            }
+
+            if(!encontrado1 && !encontrado2){
+                return "Ninguno de los dos jugadores tiene estadisticas registradas";
+            } else if(!encontrado1){
+                return "El jugador " + jugador1 + " no tiene estadisticas registradas";
+            } else if(!encontrado2){
+                return "El jugador " + jugador2 + " no tiene estadisticas registradas";
+            }
+
+            int total1 = v1 + e1 + d1;
+            int total2 = v2 + e2 + d2;
+
+            double porcentajeV1 = total1 > 0 ? (v1 * 100.0 / total1) : 0;
+            double porcentajeV2 = total2 > 0 ? (v2 * 100.0 / total2) : 0;
+
+            StringBuilder sb = new StringBuilder();
+            sb.append("\n=== RANKING: ").append(jugador1).append(" vs ").append(jugador2).append(" ===\n");
+            sb.append(String.format("%-12s | V: %d | E: %d | D: %d | Puntos: %d | %% Victorias: %.1f%%\n",
+                    jugador1, v1, e1, d1, p1, porcentajeV1));
+            sb.append(String.format("%-12s | V: %d | E: %d | D: %d | Puntos: %d | %% Victorias: %.1f%%",
+                    jugador2, v2, e2, d2, p2, porcentajeV2));
+
+            return sb.toString();
+
+        }catch(SQLException e){
+            System.err.println("Error obteniendo ranking vs: "+e.getMessage());
+            return "Error al obtener ranking";
+        }
+    }
 }
