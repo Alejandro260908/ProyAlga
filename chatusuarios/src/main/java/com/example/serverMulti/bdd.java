@@ -439,4 +439,19 @@ public class bdd {
             return "Error al obtener ranking";
         }
     }
+
+    public static void cerrarConexion(){
+        if(conexion != null){
+            try{
+                conexion.close();
+                System.out.println("Conexion cerrada");
+            }catch(SQLException e){
+                System.err.println("Error al cerrar el conexion: "+e.getMessage());
+            }
+        }
+    }
+
+    public static boolean estaConectado(){
+        return conexion != null;
+    }
 }
