@@ -220,4 +220,42 @@ public class bdd {
             }
         }
     }
+
+    public static boolean bloquearUsuario(String bloqueador, String bloqueado){
+        if(conexion == null) {
+            System.err.println("No hay conexion a la base de datos, no se puede bloquear el usuario: " + bloqueado);
+            return false;
+        }
+
+        if(bloqueador.equals(bloqueado)){
+            return false;
+        }
+
+        String sql = "INSERT INTO ban(bloqueador, baneado) VALUES(?,?) ON CONFLICT DO NOTHING";
+        try(PreparedStatement pstmt = conexion.prepareStatement(sql)){
+            pstmt.setString(1,bloqueador);
+            pstmt.setString(2,bloqueado);
+            return pstmt.executeUpdate() > 0;
+        }catch(SQLException e){
+            System.err.println("Error al bloquear el usuario: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static boolean desbloquearUsuario(String bloqueador, String baneado){
+        if(conexion == null) {
+            System.err.println("No hay conexion a la base de datos, no se puede desbloquear el usuario: " + bloqueado);
+            return false;
+        }
+
+        String sql = "DELETE FROM ban WHERE bloqueador = ? AND baneado = ?";
+        try(PreparedStatement pstmt = conexion.prepareStatement(sql)){
+            pstmt.setString(1,bloqueador);
+            pstmt.setString(2,baneado);
+            return pstmt.executeUpdate() > 0;
+        }catch(SQLException e){
+            System.err.println("Error al desbloquear el usuario: " + e.getMessage());
+            return false;
+        }
+    }
 }
