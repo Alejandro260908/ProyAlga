@@ -63,4 +63,22 @@ public class bdd {
         }
         
     }
+
+    private static void crearTB() throws SQLException{
+        String sql = """
+                CREATE TABLE IF NOT EXISTS ban(
+                id SERIAL PRIMARY KEY,
+                bloqueador varchar(50) NOT NULL,
+                baneado varchar(50) NOT NULL,
+                fecha_ban TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                unique(bloqueador, baneado),
+                FOREIGN KEY (bloqueador) REFERENCES usuarios(username) ON DELETE CASCADE,
+                FOREIGN KEY (baneado) REFERENCES usuarios(username) ON DELETE CASCADE
+                )
+                """;
+        try(Statement stmt = conexion.createStatement()){
+            stmt.execute(sql);
+            System.out.println("Tabla ban creada");
+        }
+    }
 }
