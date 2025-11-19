@@ -300,5 +300,37 @@ public class bdd {
         return bloqueados;
     }
 
-    
+    public static void rVic(String ganador, String perdedor){
+        if(conexion == null) {
+            System.out.println("No se pueden registrar estadisticas en modo offline");
+            return;
+        }
+
+        aEst(ganador, "victorias", 2);
+        aEst(perdedor, "derrotas", 0);
+    }
+
+    public static void rEmp(String jugador1, String jugador2){
+        if(conexion == null) {
+            System.out.println("No se pueden registrar estadisticas en modo offline");
+            return;
+        }
+        aEst(jugador1, "empates", 1);
+        aEst(jugador2, "empates", 1);
+    }
+
+    private static void aEst(String username, String tipo, int puntos){
+        String sql = "UPDATE ranking SET " + tipo + " = " + tipo + " + 1, puntos = puntos + ? WHERE username = ?";
+        try(PreparedStatement pstmt = conexion.prepareStatement(sql)){
+            pstmt.setInt(1, puntos);
+            pstmt.setString(2, username);
+            int rowsAffected = pstmt.executeUpdate();
+
+            if(rowsAffected == 0){
+                System.err.println("No se encontraron estadisticas para el usuario: " + username);
+            }
+        }catch(SQLException e){
+            System.err.println("Error actualizando rankings para " + username + ": " + e.getMessage());
+        }
+    }
 }
