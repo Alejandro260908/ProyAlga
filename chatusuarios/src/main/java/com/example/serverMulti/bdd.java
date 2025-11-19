@@ -81,4 +81,32 @@ public class bdd {
             System.out.println("Tabla ban creada");
         }
     }
+
+    public static boolean rU(String username, String password){
+        if(conexion == null){
+            return SistemaAutenticacion.registrarUsuarioOffline(username,password);
+        }
+
+        String sql = "INSERT INTO usuarios(username, password) VALUES(?,?)";
+
+        try(PreparedStatement pstmt = conexion.prepareStatement(sql)){
+            pstmt.setString(1,username);
+            pstmt.setString(2,password);
+
+            int rowsAffected = pstmt.executeUpdate();
+            
+            if(rowsAffected > 0){
+                inicializarRanking(username);
+                return true;
+            }
+            return false;
+        }catch(SQLException e){
+            if(e.getSQLState().equals("23505")){
+                return false;
+            }
+            System.err.println("Error al registrar el usuario: "+e.getMessage());
+            return false;
+        }
+    }
+    
 }
