@@ -333,4 +333,47 @@ public class bdd {
             System.err.println("Error actualizando rankings para " + username + ": " + e.getMessage());
         }
     }
+
+    public static List<String> obtenerRanking(){
+        List<String> ranking = new ArrayList<>();
+        if(conexion == null){
+            ranking.add("Ranking no disponible en modo offline");
+            return ranking;
+        }
+
+        String sql = "SELECT username, victorias, empates, derrotas, puntos FROM ranking ORDER BY puntos DESC, victorias DESC LIMIT 10";
+
+        try(Statement stmt = conexion.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)){
+
+            ranking.add("\n=== RANKING DE JUGADORES ===");
+            ranking.add("Pos | Usuario      | V | E | D | Puntos");
+            ranking.add("----+--------------+---+---+---+-------");
+
+            int pos = 1;
+            boolean hayJugadores = false;
+            while(rs.next()){
+                hayJugadores = true;
+                String usuario = rs.getString("username");
+                int victorias = rs.getInt("victorias");
+                int empates = rs.getInt("empates");
+                int derrotas = rs.getInt("derrotas");
+                int puntos = rs.getInt("puntos");
+
+                ranking.add(String.format("%-3d | %-12s | %d | %d | %d | %d",
+                        pos++, usuario, victorias, empates, derrotas, puntos));
+            }
+
+            if(!hayJugadores){
+                ranking.add("No hay jugadores en el ranking todavia");
+            }
+
+        }catch(SQLException e){
+            System.err.println("Error obteniendo ranking: "+e.getMessage());
+            ranking.clear();
+            ranking.add("Error al obtener el ranking");
+        }
+
+        return ranking;
+    }
 }
