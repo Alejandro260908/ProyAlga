@@ -258,4 +258,24 @@ public class bdd {
             return false;
         }
     }
+
+    public static boolean bloqueado(String usuario1, String usuario2){
+        if(conexion == null) {
+            return false;
+        }
+
+        String sql = "SELECT 1 FROM ban WHERE (bloqueador = ? AND baneado = ?) OR (bloqueador = ? AND baneado = ?)";
+        try(PreparedStatement pstmt = conexion.prepareStatement(sql)){
+            pstmt.setString(1,usuario1);
+            pstmt.setString(2,usuario2);
+            pstmt.setString(3,usuario2);
+            pstmt.setString(4,usuario1);
+
+            ResultSet rs = pstmt.executeQuery();
+            return rs.next();
+        }catch (SQLException e){
+            System.err.println("Error al verificar bloqueo");
+            return false;
+        }
+    }
 }
