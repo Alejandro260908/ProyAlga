@@ -278,4 +278,27 @@ public class bdd {
             return false;
         }
     }
+
+    public static List<String> obtenerBloqueados(String username){
+        List<String> bloqueados = new ArrayList<>();
+        if(conexion == null){
+            return bloqueados;
+        }
+
+        String sql = "SELECT baneado FROM ban WHERE bloqueador = ? ORDER BY fecha_bloqueo DESC";
+        try(PreparedStatement pstmt = conexion.prepareStatement(sql)){
+            pstmt.setString(1, username);
+            ResultSet rs = pstmt.executeQuery();
+
+            while(rs.next()){
+                bloqueados.add(rs.getString("baneado"));
+            }
+        }catch(SQLException e){
+            System.err.println("Error al obtener usuarios bloqueados: " + e.getMessage());
+        }
+
+        return bloqueados;
+    }
+
+    
 }
