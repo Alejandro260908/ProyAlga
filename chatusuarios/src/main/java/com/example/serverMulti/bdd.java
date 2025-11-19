@@ -27,7 +27,7 @@ public class bdd {
         }
     }
 
-    private static void crearTablaUsuarios() throws SQLException{
+    private static void crearTU() throws SQLException{
         String sql = """
                 CREATE TABLE IF NOT EXISTS usuarios(
                 id SERIAL PRIMARY KEY,
